@@ -1,0 +1,3 @@
+[submodule "lib/esp_utility"]
+	path = lib/esp_utility
+	url = https://github.com/ReAlexLiu/esp_utility.git
