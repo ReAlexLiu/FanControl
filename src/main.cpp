@@ -15,10 +15,22 @@ void             setup()
     Serial.begin(9600);
 
     esp_utility::config::getInstance().load();
+
+#ifdef ENABLE_WIFI
     esp_utility::wifi_config::getInstance().begin(http_server);
+#endif
+
+#ifdef ENABLE_DS18B20
     esp_utility::ds18b20::getInstance().begin(http_server);
+#endif
+
+#ifdef ENABLE_OTA
     esp_utility::ota::getInstance().begin(http_server);
+#endif
+
+#ifdef ENABLE_FAN
     esp_utility::fun_control::getInstance().begin(http_server);
+#endif
 
     // 设置Web服务器
     http_server.on("/", HTTP_GET, [&]() {
@@ -38,14 +50,21 @@ void             setup()
 
 void loop()
 {
+#ifdef ENABLE_DS18B20
     esp_utility::ds18b20::getInstance().update();
+#endif
 
+#ifdef ENABLE_OTA
     esp_utility::ota::getInstance().update();
-    
+#endif
+
+#ifdef ENABLE_FAN
     esp_utility::fun_control::getInstance().update();
+#endif
 
-
+#ifdef ENABLE_WIFI
     esp_utility::wifi_config::getInstance().update();
+#endif
 
     http_server.handleClient();
 
