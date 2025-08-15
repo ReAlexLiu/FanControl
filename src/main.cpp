@@ -2,9 +2,10 @@
 
 #include "ds18b20.h"
 #include "fun_control.h"
-#include "ota.h"
-#include "wifi_config.h"
 #include "index.h"
+#include "ota.h"
+#include "rtc_pcf8563.h"
+#include "wifi_config.h"
 
 #include <ESP8266WebServer.h>
 
@@ -12,7 +13,7 @@ ESP8266WebServer http_server(80);
 
 void             setup()
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     esp_utility::config::getInstance().load();
 
@@ -30,6 +31,9 @@ void             setup()
 
 #ifdef ENABLE_FAN
     esp_utility::fun_control::getInstance().begin(http_server);
+#endif
+#ifdef ENABLE_RTC_PCF8563
+    esp_utility::rtc_pcf8563::getInstance().begin(http_server);
 #endif
 
     // 设置Web服务器
@@ -64,6 +68,10 @@ void loop()
 
 #ifdef ENABLE_WIFI
     esp_utility::wifi_config::getInstance().update();
+#endif
+
+#ifdef ENABLE_RTC_PCF8563
+    esp_utility::rtc_pcf8563::getInstance().update();
 #endif
 
     http_server.handleClient();
